@@ -1,0 +1,20 @@
+﻿  源.cpp
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,2): error C2672: “_advance”: 未找到匹配的重载函数
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(68,6): message : 可能是“void _advance(RandomIterator,Distance,Random_Iterator_tag)”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : “初始化”: 无法从“std::random_access_iterator_tag”转换为“Random_Iterator_tag”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(55,6): message : 或    “void _advance(Bidirectional,Distance,Bidirectional_Iterator_tag)”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : “初始化”: 无法从“std::random_access_iterator_tag”转换为“Bidirectional_Iterator_tag”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(49,6): message : 或    “void _advance(InputIterator,Distance,Forward_Iterator_tag)”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : “初始化”: 无法从“std::random_access_iterator_tag”转换为“Forward_Iterator_tag”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(43,6): message : 或    “void _advance(InputIterator,Distance,Input_Iterator_tag)”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : “初始化”: 无法从“std::random_access_iterator_tag”转换为“Input_Iterator_tag”
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(104,35): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+F:\数据结构与算法分析\STL源码刨析\迭代器相应型别\迭代器相应型别\源.cpp(112,18): message : 查看对正在编译的函数 模板 实例化“void m_advance<Bidirectional_Iterator_tag,int>(InputIterator &,Distance)”的引用
+          with
+          [
+              InputIterator=Bidirectional_Iterator_tag,
+              Distance=int
+          ]
