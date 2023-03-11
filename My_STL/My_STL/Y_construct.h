@@ -42,9 +42,8 @@ template <typename ForwardIterator,typename T>
 inline void _destroy(ForwardIterator first, ForwardIterator last,T*)//value_type返回T*
 {
 	using Trivial_dtor = typename __type_traits<T>::has_trivial_destructor;
-	Trivial_dtor temp{};
-	T type{};
-	_destroy_solve(first, last, temp);
+	Trivial_dtor p;
+	_destroy_solve(first, last, p);
 }
 
 //销毁[first，last)中的元素

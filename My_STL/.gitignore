@@ -1,4 +1,3 @@
 *.vs
-*.cpp
-*.h
 x64
+*.gitignore

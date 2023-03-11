@@ -1,9 +1,6 @@
 ﻿#ifndef Y_UNINITIALIZED_H_
 #define Y_UNINITIALIZED_H_
-#include "Y_config.h"
-#include "Y_type_traits.h"
 #include "Y_construct.h"
-
 /*
 std::uninitialized_copy();//有返回值
 std::uninitialized_fill();//无返回值
@@ -102,14 +99,15 @@ inline void uninitialized_fill(ForwardIterator first, ForwardIterator last, cons
 
 //POD类型
 template <typename ForwardIterator, typename Size, typename Value>
-inline ForwardIterator _uninitialized_fill_n_solve(ForwardIterator first, Size n, const Value& value, __true_type)
+inline ForwardIterator _uninitialized_fill_n_solve(ForwardIterator first,const Size n, const Value& value, __true_type)
 {
 	return std::fill_n(first, n, value);
+	//return nullptr;
 }
 
 //非POD类型
 template <typename ForwardIterator, typename Size, typename Value>
-inline ForwardIterator _uninitialized_fill_n_solve(ForwardIterator first, Size n, const Value& value,__false_type)
+inline ForwardIterator _uninitialized_fill_n_solve(ForwardIterator first, const Size n, const Value& value,__false_type)
 {
 	ForwardIterator cur = first;
 	try
@@ -130,7 +128,7 @@ inline ForwardIterator _uninitialized_fill_n_solve(ForwardIterator first, Size n
 
 
 template <typename ForwardIterator, typename Size, typename Value,typename T>
-inline ForwardIterator _uninitialized_fill_n(ForwardIterator first, Size n, const Value& value,T*)
+inline ForwardIterator _uninitialized_fill_n(ForwardIterator first,const Size n, const Value& value,T*)
 {
 	using IS_POD_TYPE = typename __type_traits<T>::is_POD_type;
 	return _uninitialized_fill_n_solve(first, n, value, IS_POD_TYPE());
@@ -139,7 +137,7 @@ inline ForwardIterator _uninitialized_fill_n(ForwardIterator first, Size n, cons
 
 
 template <typename ForwardIterator, typename Size, typename Value>
-inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const Value& value)
+inline ForwardIterator uninitialized_fill_n(ForwardIterator first, const Size n, const Value& value)
 {
 	return _uninitialized_fill_n(first, n, value, value_type(first));
 }

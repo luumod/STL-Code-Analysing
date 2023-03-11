@@ -13,6 +13,18 @@ struct ForwardIterator_tag :public InputIterator_tag {};
 struct Bibirectional_Iterator_tag :public ForwardIterator_tag {};
 struct Random_Access_Iterator_tag :public Bibirectional_Iterator_tag {};
 
+//iterator类
+template <typename category, typename T, typename Distance = std::ptrdiff_t,
+	typename Pointer = T*, typename Reference = T&>
+struct iterator
+{
+	using value_type = T;
+	using difference_type = Distance;
+	using pointer = Pointer;
+	using reference = Reference;
+	using iterator_category = category;
+};
+
 //迭代器萃取机
 template <typename T>
 struct iterator_traits
@@ -27,8 +39,8 @@ struct iterator_traits
 template <typename T>
 struct iterator_traits<T*>
 {
-	using value_type = typename T::value_type;
-	using difference_type = typename T::difference_type;
+	using value_type = T;
+	using difference_type = ptrdiff_t;
 	using pointer = T*;
 	using reference = T&;
 	using iterator_category = Random_Access_Iterator_tag;
@@ -37,8 +49,8 @@ struct iterator_traits<T*>
 template <typename T>
 struct iterator_traits<const T*>
 {
-	using value_type = typename T::value_type;
-	using difference_type = typename T::difference_type;
+	using value_type = T;
+	using difference_type = ptrdiff_t;
 	using pointer = const T*;
 	using reference = const T&;
 	using iterator_category = Random_Access_Iterator_tag;

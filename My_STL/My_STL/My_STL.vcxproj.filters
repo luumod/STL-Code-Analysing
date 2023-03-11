@@ -41,5 +41,8 @@
     <ClInclude Include="Y_uninitialized.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Y_vector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

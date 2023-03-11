@@ -6,32 +6,16 @@
 /*
 空间配置器
 */
+
+//默认使用第二级空间配置器
+#define USING_TWO_DEFAULT_MALLOC_ALLOCATOR
+
+
 _YLH_BEGIN
 
-//空间配置器接口
-template <typename T,typename Alloc>
-class simplae_alloc
-{
-public:
-	static T* allocate(size_t n)
-	{
-		//多个空间
-		return 0 == n ? 0 : (T*)Alloc::allocate(n * sizeof(T));
-	}
-	static T* allocate(void)
-	{
-		//一个空间
-		return (T*)Alloc::allocate(sizeof(T));
-	}
-	static void deallocate(T* p)
-	{
-		Alloc::deallocate(p, sizeof(T));
-	}
-	static void deallocate(T* p,size_t n)
-	{
-		if (n != 0) Alloc::deallocate(p, n * sizeof(T));
-	}
-};
+struct Null {};
+
+
 
 
 //第一级空间配置器
@@ -83,7 +67,7 @@ inline void* malloc_alloc_template<T>::oom_malloc(size_t n)
 		m_malloc_handler = malloc_alloc_template_handler;
 		if (m_malloc_handler == NULL)
 		{
-			THROW_BAD_ALLOC
+			VECTOR_THROW_BAD_ALLOC
 		}
 		(*m_malloc_handler)();//尝试调用此函数
 		result = malloc(n);
@@ -101,7 +85,7 @@ inline void* malloc_alloc_template<T>::oom_realloc(void* p, size_t n)
 		m_realloc_handle = malloc_alloc_template_handler;
 		if (m_realloc_handle == NULL)
 		{
-			THROW_BAD_ALLOC
+			VECTOR_THROW_BAD_ALLOC
 		}
 		(*m_realloc_handle)();//尝试调用此函数
 		result = realloc(p, n);
@@ -109,8 +93,36 @@ inline void* malloc_alloc_template<T>::oom_realloc(void* p, size_t n)
 	}
 }
 
-struct Null {};
-using malloc_alloc = malloc_alloc_template<Null>; //第一级空间配置器
+//第一级空间配置器
+using malloc_alloc = malloc_alloc_template<Null>;
+
+
+//空间配置器接口
+template <typename T, typename Alloc>
+class simplae_alloc
+{
+public:
+	static T* allocate(size_t n)
+	{
+		//多个空间
+		return 0 == n ? 0 : (T*)Alloc::allocate(n * sizeof(T));
+	}
+	static T* allocate(void)
+	{
+		//一个空间
+		return (T*)Alloc::allocate(sizeof(T));
+	}
+	static void deallocate(T* p)
+	{
+		Alloc::deallocate(p, sizeof(T));
+	}
+	static void deallocate(T* p, size_t n)
+	{
+		if (n != 0) Alloc::deallocate(p, n * sizeof(T));
+	}
+};
+
+
 
 //第二级空间配置器
 template <typename Null>
@@ -120,7 +132,6 @@ private:
 	enum { __ALIGN = 8 };//对齐的个数
 	enum { __MAX_BYTES = 128 };//小型区块的个数
 	enum { __NUM_FREE_LISTS = __MAX_BYTES / __ALIGN };//自由链表的个数
-private:
 	union Area
 	{
 		Area* next;
@@ -142,7 +153,7 @@ private:
 	//重新填充自由链表
 	static void* refill(size_t n)
 	{
-		int nobjs = 20;
+		size_t nobjs = 20;
 		//nobjs通过传递引用的方式 来取得nobjs个区块作为free_list的新节点
 		char* chunk = chunk_alloc(n, nobjs);
 
@@ -157,8 +168,11 @@ private:
 
 		//在chunk空间里建立free_List 
 		result = (Area*)chunk;
-		*my_free_list = next_obj = (Area*)(chunk + n);//free_list指向新配置的空间（取自内存池）
 
+		//我们首先把所需要的一块空间（8字节）取出来
+		//然后再把剩下的15块填充到 free-list自由链表中
+		*my_free_list = next_obj = (Area*)(chunk + n);
+		
 		//将free_list各个节点串联起来
 		for (i = 1; ; i++) {
 			current_obj = next_obj;
@@ -174,7 +188,7 @@ private:
 		return (result);
 	}
 	//内存池
-	static char* chunk_alloc(size_t size, int& nobjs)
+	static char* chunk_alloc(size_t size, size_t& nobjs)
 	{
 		char* result;
 		size_t total_bytes = size * nobjs;//总的需要分配的大小  *20倍
@@ -210,10 +224,11 @@ private:
 				*my_free_list = (Area*)start_free;
 			}
 
+			//基本上都会成功
 			start_free = (char*)malloc(bytes_to_get);
 			if (0 == start_free) {//malloc失败，说明heap上没有足够空间分配给我们了
 				Area* volatile * my_free_list, * p;
-				for (int i = size; i <= (size_t)__MAX_BYTES; i += (size_t)__ALIGN) {
+				for (size_t i = size; i <= (size_t)__MAX_BYTES; i += (size_t)__ALIGN) {
 					my_free_list = free_list + FREELIST_INDEX(i);
 					p = *my_free_list;
 					if (0 != p) {
@@ -293,10 +308,17 @@ char* default_alloc_template<Null>::start_free = 0;
 char* default_alloc_template<Null>::end_free = 0;
 size_t default_alloc_template<Null>::heap_size = 0;
 default_alloc_template<Null>::Area* volatile default_alloc_template<Null>::free_list[
-		default_alloc_template<Null>::__NUM_FREE_LISTS] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+default_alloc_template<Null>::__NUM_FREE_LISTS] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+
 
 //alloc为默认的第二级空间配置器
+#ifdef USING_TWO_DEFAULT_MALLOC_ALLOCATOR
 using alloc = default_alloc_template<Null>;
+#else
+using alloc = malloc_alloc_template<Null>;
+
+#endif // DEBUG
+
 
 _YLH_END
 
