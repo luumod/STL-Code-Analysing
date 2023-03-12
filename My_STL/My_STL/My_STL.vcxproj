@@ -133,6 +133,7 @@
     <ClInclude Include="Y_allocator.h" />
     <ClInclude Include="Y_construct.h" />
     <ClInclude Include="Y_iterator_traits.h" />
+    <ClInclude Include="Y_list.h" />
     <ClInclude Include="Y_memory.h" />
     <ClInclude Include="Y_config.h" />
     <ClInclude Include="Y_type_traits.h" />

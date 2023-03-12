@@ -99,7 +99,7 @@ using malloc_alloc = malloc_alloc_template<Null>;
 
 //空间配置器接口
 template <typename T, typename Alloc>
-class simplae_alloc
+class simple_alloc
 {
 public:
 	static T* allocate(size_t n)

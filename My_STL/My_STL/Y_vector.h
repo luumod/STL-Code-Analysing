@@ -24,7 +24,7 @@ public:
 	using size_type = size_t;
 	using difference_type = ptrdiff_t;
 protected:
-	using data_allocator = simplae_alloc<value_type, Alloc>;//vector默认使用第二级空间配置器
+	using data_allocator = simple_alloc<value_type, Alloc>;//vector默认使用第二级空间配置器
 public: //构造函数
 	vector():start(0), finish(0), end_of_storage(0) {}
 	//初始化列表

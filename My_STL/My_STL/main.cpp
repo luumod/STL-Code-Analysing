@@ -1,6 +1,8 @@
 ﻿#include "Y_memory.h"
 #include "Y_vector.h"
 #include <vector>
+#include <list>
+#include "Y_list.h"
 #include <string>
 USING_YLH
 void testAlloc()
@@ -70,16 +72,75 @@ void testVector()
 	vector_dbg();
 #endif
 }
-
 void testPush_back() {
 	vector<int> vec{ 1,2,3,4,5,6 };
 	show(vec.begin(), vec.end());
 }
 
+//list test
+void testList() {
+	list<int> ls;
+	for (int i = 1; i <= 5; i++) {
+		ls.push_back(i);
+		show(ls.begin(), ls.end());
+	}
+	for (int i = 5; i <= 10; i++) {
+		ls.push_front(i);
+		show(ls.begin(), ls.end());
+	}
+#if 0
+	while (!ls.empty()) {
+#if 0
+		ls.pop_front();
+#else
+		ls.pop_back();
+#endif
+		show(ls.begin(), ls.end());
+	}
+#endif
+	/*for (int i = 1; i <= 5; i++) {
+		ls.remove(i);
+		show(ls.begin(), ls.end());
+	}
+	*/
+	list<int> temp{ 1,2,3,4 };
+	list<int>::iterator cur(ls.begin());
+	for (int i = 1; i <= 4; i++) {
+		++cur;
+	}
+	std::cout << *cur << std::endl;
+	ls.splice(cur, temp);
+	show(ls.begin(), ls.end());
+	ls.sort();
+		show(ls.begin(), ls.end());
+	//show(temp.begin(), temp.end());
+	/*show(ls.begin(), ls.end());
+	std::cout << "Size: " << ls.size() << std::endl;
+	std::cout << "------------------------------------\n";
+	list<int> ls2{ 0,1,1,1,1,1,3};
+	show(ls2.begin(), ls2.end());
+	ls2.unique();
+	show(ls2.begin(), ls2.end());
+	
+
+
+	std::cout << "Size: " << ls2.size() << std::endl;*/
+}
+
 int main()
 {
-	testVector();
+	//testVector();
 	//testPush_back();
+	testList();
+	list<int> ls{ 1,2,13,14,0 };
+	list<int> ls2{ 5,6,7,8};
+	ls.merge(ls2);
+	show(ls.begin(), ls.end());
+	show(ls2.begin(), ls2.end());
 
+	ls.reverse();
+	show(ls.begin(), ls.end());
+	ls.sort();
+	ls.show();
 	return 0;
 }
